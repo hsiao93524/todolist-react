@@ -1,59 +1,61 @@
 import logo from './logo.svg';
 import './App.css';
-import React, { Component } from "react";
+import React, { useState } from "react";
 
-// function App() {
+function App() {
 
-//     const styles = {
-//         doneDoto: {
-//         },
-//     };
-//     text-decoration-line: line-through
-// }
+    const [title, setTitle] = useState("TodoList");
+    const [todos, setTodos] = useState([]);
+    const [checked, setChecked] = React.useState(true);
 
-// export default App;
-export default class App extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            title: "TodoList",
-            todos: [],
-        };
-    }
-    render() {
+    // const styles = {
+    //     doneDoto: {
+    //     },
+    // };
+    // text-decoration-line: line-through
 
-
-        return (
-            <html>
-                <head>
-                </head>
-            
-                <body>
-                    <div id="app">{this.state.title}</div>
-                    <div id="todolist">
-                        <div>
-                            <button>Drag block</button>
-                            <input type="checkbox"></input>
-                            <label>todo 1</label>
-                            <button>edit</button>
-                            <button>del</button>
-                        </div>
-                        <div>
-                            <button>Drag block</button>
-                            <input type="checkbox" checked></input>
-                            <label style={{textDecoration: 'line-through'}}>
-                                todo 2
-                            </label>
-                            <button>edit</button>
-                            <button>del</button>
-                        </div>
-                        <div>
-                            <input></input>
-                            <button>+</button>
-                        </div>
+    return (
+        <html>
+            <head>
+            </head>
+        
+            <body>
+                <div id="app">{title}</div>
+                <div id="todolist">
+                    {/* Coponent props*/}
+                    <div>
+                        <button>Drag block</button>
+                        <input 
+                            onChange={() => setChecked((state) => !state)}
+                            defaultChecked={checked}
+                            type="checkbox">
+                        </input>
+                        <label>todo 1</label>
+                        <button>edit</button>
+                        <button>del</button>
                     </div>
-                </body>
-            </html>
-        );
-    }
+                    {/* Coponent props*/}
+                    <div>
+                        <button>Drag block</button>
+                        <input 
+                            onChange={() => setChecked((state) => !state)}
+                            defaultChecked={checked}
+                            type="checkbox">
+                        </input>
+                        <label style={{textDecoration: 'line-through'}}>
+                            todo 2
+                        </label>
+                        <button>edit</button>
+                        <button>del</button>
+                    </div>
+                    <div>
+                        <input></input>
+                        <button>+</button>
+                    </div>
+                </div>
+            </body>
+        </html>
+    );
 }
+
+export default App;
