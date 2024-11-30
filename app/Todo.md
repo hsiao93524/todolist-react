@@ -18,3 +18,9 @@ folder: [google drive](https://drive.google.com/drive/u/0/folders/1TSZwPIfpwObc9
 - [ ] sort list by done / create date / alphabet
 - [ ] check if task exist
 - [ ] export / import with md or csv
+
+## Edit
+
+- function
+  - click "pencil" to edit
+  - click "x" to del

@@ -68,17 +68,16 @@ function TodoItem(props) {
     // const trigger = () => setChecked((state) => !state);
     // const trigger = (state) => {state = !state};
 
-    const editStart = () => {
-        toggleEdit();
-        focusToInput();
-    }
-    const editComplete = () => {
-        changeTitle();
-    }
-    const editCancel = () => {
-        toggleEdit();
-        setLocalTitle(props.title);
-    }
+    /**
+     * method 1
+     */
+    // const trigger = () => {props.change_check(props.index)};
+    /**
+     * method 2
+     */
+    // nothing
+
+    console.log(props);
     
     const [localTitle, setLocalTitle] = useState(props.title);
     const changeTitle = () => {
@@ -94,26 +93,34 @@ function TodoItem(props) {
     }
 
     const inputRef = useRef(null);
-    const focusToInput = () => {
+    const focusOninput = () => {
         inputRef.current && inputRef.current.focus()
     }
     useEffect(() => {
+        console.log("use effect run")
         if(props.isEditing){
-            focusToInput();
+            focusOninput();
         }
     }, [props.isEditing]);
     const onEditclick = () => {
-        editStart();
+        toggleEdit();
+        
+        focusOninput();
     }
 
     return (
         <div style={{ display: 'flex' }}>
             <button style={Boolean(props.isEditing) ? { visibility: "hidden" } : {}}>Drag block</button>
             <input style={Boolean(props.isEditing) ? { visibility: "hidden" } : {}}
+                /** method 1 */
+                // onChange={trigger}
+                /** method 2 */
                 onChange={toggleCompleteCheck}
+                
                 checked={props.checked}
                 type="checkbox">
             </input>
+            {/* <label style={itemStyle}>{props.title}</label> */}
             {
                 Boolean(props.isEditing) ?
                     <input
@@ -125,10 +132,30 @@ function TodoItem(props) {
                             (e) => setLocalTitle(e.target.value)
                         }
                         onKeyDown={(e) => {
+                            /**
+                             * 24-11-30 format string
+                             */
+                            console.log("A Pressed keyCode %s", e.key); 
+                            console.log(`B Pressed keyCode ${e.key}`); // major usage
                             if (e.key === 'Enter') {
-                                editComplete();
+                                // Do code here
+                                console.log("Enter Pressed");
+                                /**
+                                 * 24-11-30 for what?
+                                 * not to do default active of browser
+                                 * ex
+                                 * <form submit>
+                                 * will not do submit
+                                 */
+                                // e.preventDefault();
+                                changeTitle();
                             }else if (e.key === 'Escape') {
-                                editCancel();
+                                // Do code here
+                                console.log("Escape Pressed");
+                                // e.preventDefault();
+
+                                toggleEdit();
+                                setLocalTitle(props.title);
                             }
                         }}
                     // Todo: isEditing evnet
@@ -139,8 +166,18 @@ function TodoItem(props) {
                     <label style={{ ...itemStyle, flex: '1' }}>{props.title}</label>
             }
             <div style={{ width: '100px' }}>
-            {Boolean(props.isEditing) && <button onClick={editComplete}>o</button>}
-            {Boolean(props.isEditing) && <button onClick={editCancel}>x</button>}
+            {Boolean(props.isEditing) && <button>+</button>}
+            {Boolean(props.isEditing) && <button 
+                onClick={ (e) =>  {
+                    /**
+                     * 24-11-30
+                     * change plaintext to textfield
+                     * key word?
+                     */
+                }
+
+                }
+                >dummy</button>}
                 {Boolean(!props.isEditing) && 
                     <button onClick={onEditclick}>Edit</button>
                 }
@@ -153,6 +190,7 @@ function TodoItem(props) {
 function App() {
 
     const [title, setTitle] = useState("TodoList");
+    // const [todos, setTodos] = useState([]);
 
     // Todo: How to use setTodos to get data from database or file
     const [todos, setTodos] = useState([
@@ -160,6 +198,26 @@ function App() {
         { title: "auto todo 2", checked: false, isEditing: false },
         { title: "auto todo 3 to isEditing", checked: false, isEditing: true },
     ])
+    
+    /**
+     * Method 1
+     * @param {*} idx 
+     */
+    // const toggleCompleteCheck = (idx) => {
+    //     setTodos(prev => {
+    //         /**
+    //          * js deep clone
+    //          */
+    //         const newary = [...prev];
+    //         // newary[idx].checked = !newary[idx].checked;
+    //         newary[idx] = { ...newary[idx], checked: !newary[idx].checked }
+    //         console.log(newary[idx]);
+    //         return newary;
+    //     });
+    // }
+    /**
+     * Method 2
+     */
 
     return (
         <div>
@@ -168,10 +226,18 @@ function App() {
                 {
                     todos.map(
                         (todo, idx) => (
+                            /** 24-11-16
+                             * const [isCheck, setIsCheck] = useState(false);
+                             * <TodoItem title={todo.title} checked={isCheck} isEditing={todo.isEditing} onChangeCheck={setIsCheck}/>
+                             */
                             <TodoItem
                                 title={todo.title}
                                 checked={todo.checked} 
                                 isEditing={todo.isEditing}
+                                // change_check={toggleCompleteCheck}
+                                /**
+                                 * method 2
+                                 */
                                 setTodos={setTodos}
                                 index={idx}
                             />
