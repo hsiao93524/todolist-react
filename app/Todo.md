@@ -21,6 +21,18 @@ folder: [google drive](https://drive.google.com/drive/u/0/folders/1TSZwPIfpwObc9
 
 ## Edit
 
-- function
+- change icon
   - click "pencil" to edit
   - click "x" to del
+
+## Add
+
+- click "+" button to show new line
+  - default:
+    - only a "+" button
+  - new line
+    - edit field
+    - ok button
+    - cancel button
+  - if click cancel all editing line
+  - how to reuse ok and cancel button
