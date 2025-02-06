@@ -150,7 +150,10 @@ function TodoItem(props) {
     const onEditclick = () => {
         editStart();
     }
-
+    // default: 0, 1, 2, 3, 4
+    // sts1: a, b, c
+    // sts2: x, y, z
+    // 0, 1, 2, 3, 4, a, b, c
     return (
         <div style={{ display: 'flex' }}>
             {
@@ -205,15 +208,29 @@ function App() {
     const [title, setTitle] = useState("TodoList");
 
     // Todo: How to use setTodos to get data from database or file
+    // Adding status for judging adding or editing
     const [todos, setTodos] = useState([
         { title: "auto todo 1", checked: true, isEditing: false },
         { title: "auto todo 2", checked: false, isEditing: false },
         { title: "auto todo 3 to isEditing", checked: false, isEditing: true },
     ])
 
+    const addItem = () => {
+        setTodos([...todos, {title: "new one", checked: false, isEditing: true}]);
+    }
+
+    const doCancelAll = () => {
+        console.log("Complete here") /* 02/08 */
+    }
+
     return (
         <div>
             <div id="app">{title}</div>
+            <div id="toolbar">
+                <button>Complete all</button>
+                <button>Cancel all</button>
+                <button>Delete all</button>
+            </div>
             <div id="todolist" style={{ width: "400px" }}>
                 {
                     todos.map(
@@ -238,7 +255,7 @@ function App() {
                      * <button style={{ visibility: "hidden" }}> text decide width </button>
                      */
                 }
-                <button>+</button>
+                <button onClick={addItem}>+</button>
                 <div style={{ width: '100px' }}>
                 </div>
             </div>

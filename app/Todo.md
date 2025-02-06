@@ -8,9 +8,12 @@ folder: [google drive](https://drive.google.com/drive/u/0/folders/1TSZwPIfpwObc9
 
 ## issue
 
+- [ ] complete all button function
+- [ ] cancel all button function
+- [ ] delete all button function
 - [ ] drag block
-- [ ] default checked cannot change
-- [ ] new item row with no checkbox and drag block
+- [x] default checked cannot change
+- [x] new item row with no checkbox and drag block
 - [ ] change edit panel
 
 ## function
