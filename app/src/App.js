@@ -17,7 +17,7 @@ function EditItem() {
                 type="checkbox">
             </input>
             {
-                // Boolean(props.isEditing) ?
+                // Boolean(props.isItemEditing) ?
                 //     <input
                 //         ref={inputRef}
                 //         type="text"
@@ -33,20 +33,20 @@ function EditItem() {
                 //                 editCancel();
                 //             }
                 //         }}
-                //     // Todo: isEditing evnet
+                //     // Todo: isItemEditing evnet
                 //     // https://react.dev/reference/react-dom/components/input
                 //     // Ref: https://medium.com/itsoktomakemistakes/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8-react-%E5%AF%AB%E5%87%BA%E5%B8%B8%E8%A6%8B%E7%9A%84-input-%E5%85%83%E4%BB%B6-3a0326aa4fb6
                 //     >
                 //     </input> :
-                //     <label style={{ ...itemStyle, flex: '1' }}>{props.title}</label>
+                //     <label style={{ ...itemStyle, flex: '1' }}>{props.itemTitle}</label>
             }
             {/* <div style={{ width: '100px' }}>
-            {Boolean(props.isEditing) && <button onClick={editComplete}>o</button>}
-            {Boolean(props.isEditing) && <button onClick={editCancel}>x</button>}
-                {Boolean(!props.isEditing) && 
+            {Boolean(props.isItemEditing) && <button onClick={editComplete}>o</button>}
+            {Boolean(props.isItemEditing) && <button onClick={editCancel}>x</button>}
+                {Boolean(!props.isItemEditing) && 
                     <button onClick={onEditclick}>Edit</button>
                 }
-                {Boolean(!props.isEditing) && <button>del</button>}
+                {Boolean(!props.isItemEditing) && <button>del</button>}
             </div> */}
         </div>
     )
@@ -60,14 +60,14 @@ function App() {
     // Todo: How to use setTodos to get data from database or file
     // Adding status for judging adding or editing
     const [todos, setTodos] = useState([
-        { id:1 , title: "auto todo 1", checked: true, isEditing: false },
-        { id:2 ,title: "auto todo 2", checked: false, isEditing: false },
-        { id:3 ,title: "auto todo 3 to isEditing", checked: false, isEditing: true },
+        { id:1 , itemTitle: "auto todo 1", checked: true, isItemEditing: false },
+        { id:2 ,itemTitle: "auto todo 2", checked: false, isItemEditing: false },
+        { id:3 ,itemTitle: "auto todo 3 to isItemEditing", checked: false, isItemEditing: true },
     ])
 
     // add id 
     const addItem = () => {
-        setTodos([...todos, {title: "new one", checked: false, isEditing: true}]);
+        setTodos([...todos, {itemTitle: "new one", checked: false, isItemEditing: true}]);
     }
 //https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/Arrow_functions#%E6%8F%8F%E8%BF%B0
     const doCancelAll = () => {
@@ -76,18 +76,18 @@ function App() {
             prevTodos.map(
                 (todo) => 
                     ({
-                        ...todo, /* title: "auto todo 1", checked: true, isEditing: false */
-                        isEditing: false
+                        ...todo, /* itemTitle: "auto todo 1", checked: true, isItemEditing: false */
+                        isItemEditing: false
                         /** 
-                         * title: "auto todo 1", checked: true, isEditing: false, isEditing: false
+                         * itemTitle: "auto todo 1", checked: true, isItemEditing: false, isItemEditing: false
                          * ->
-                         * title: "auto todo 1", checked: true, isEditing: false
+                         * itemTitle: "auto todo 1", checked: true, isItemEditing: false
                          * 
                          * same as:                 
                          * return {
-                            title: todo.title,
+                            itemTitle: todo.itemTitle,
                             checked: todo.checked,
-                            isEditing: false,
+                            isItemEditing: false,
                             }
     */
 
@@ -97,7 +97,7 @@ function App() {
             /*
             newary[props.index] = { 
                 ...newary[props.index], 
-                isEditing: !newary[props.index].isEditing 
+                isItemEditing: !newary[props.index].isItemEditing 
             }
             return newary;*/
         );
@@ -118,9 +118,9 @@ function App() {
                         (todo) => (
                             <TodoItem
                                 key={todo.id}
-                                title={todo.title}
+                                itemTitle={todo.itemTitle}
                                 checked={todo.checked} 
-                                isEditing={todo.isEditing}
+                                isItemEditing={todo.isItemEditing}
                                 setTodos={setTodos}
                                 id={todo.id}
                             />

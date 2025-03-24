@@ -3,10 +3,31 @@ import React, { useState, useRef, useEffect } from "react";
 
 function TodoItem(props) {
     const itemStyle = { textDecoration: props.checked ? 'line-through' : 'none' };
-    const editStyle = { visibility: props.isEditing ? 'visible' : 'hidden' };
-    const staticStyle = { visibility: props.isEditing ? 'hidden' : 'visible' };
+    const editStyle = { visibility: props.isItemEditing ? 'visible' : 'hidden' };
+    const staticStyle = { visibility: props.isItemEditing ? 'hidden' : 'visible' };
+    
+    /**
+     * blk-0x00 init: global to local 
+     */
+    const [title, setTitle] = useState(props.itemTitle);
+    /**
+     * 24-11-30
+     * keyword
+     * react children change parent state
+     */
+    const [isEditing, setEditing] = useState(props.isItemEditing);
+    // blk-0x00 end
 
-    const toggleCompleteCheck = () => {
+    /**
+     * blk-0x01 init: useRefs
+     */
+    const refTitleIpt = useRef(null);
+    // blk-0x01 end
+
+    /**
+     * blk-0x02 interact funcs
+     */
+    const toggleCheck = () => {
         
         props.setTodos(prev => {
             const newTodos = prev.map((item) => {
@@ -19,18 +40,9 @@ function TodoItem(props) {
             
             return newTodos
         });
-
-        // props.setTodos(prev => {
-        //     const newary = [...prev];
-        //     newary[props.id] = { 
-        //         ...newary[props.id], 
-        //         checked: !newary[props.id].checked 
-        //     }
-        //     return newary;
-        // });
     }
 
-    const delItem = () => {
+    const onDelete = () => {
         props.setTodos(prev => {
             const newary = prev.filter((eleInLst) => {
                 return props.id !== eleInLst.id;
@@ -39,35 +51,19 @@ function TodoItem(props) {
         });
     }
 
-    const toggleEdit = () => {
+    const startEdit = () => {
         props.setTodos(prev => {
             const newTodos = prev.map((item) => {
                 const newItem = {...item}
                 if (newItem.id === props.id){
-                    newItem.isEditing = !newItem.isEditing
+                    setEditing(!isEditing)
                 }
                 return newItem
             })
             
             return newTodos
-            
-            // const newary = [...prev];
-            // console.log(newary);
-            // console.log(props.id);
-            // newary[props.id] = { 
-            //     ...newary[props.id], 
-            //     isEditing: !newary[props.id].isEditing 
-            // }
-            // return newary;
         });
     }
-
-    /**
-     * 24-11-30
-     * keyword
-     * react children change parent state
-     */
-    const [isEditing, setIsEditing] = useState(false);
 
     const [checked, setChecked] = React.useState(false);
     /*
@@ -88,56 +84,50 @@ function TodoItem(props) {
     // https://tailwindcss.com/docs/display
 
 
-    // const editStyle = {visibility: props.isEditing ? 'visible' : 'hidden'};
-    // const editStyle = {display: props.isEditing ? 'inline' : 'none'};
-    // const staticStyle = {visibility: props.isEditing ? 'hidden' : 'visible'};
-    // const staticStyle = {display: props.isEditing ? 'none' : 'inline'};
+    // const editStyle = {visibility: isEditing ? 'visible' : 'hidden'};
+    // const editStyle = {display: isEditing ? 'inline' : 'none'};
+    // const staticStyle = {visibility: isEditing ? 'hidden' : 'visible'};
+    // const staticStyle = {display: isEditing ? 'none' : 'inline'};
 
     // Todo: use index
     // const trigger = () => setChecked((state) => !state);
     // const trigger = (state) => {state = !state};
 
-    const editStart = () => {
-        toggleEdit();
-        focusToInput();
+    const onEdit = () => {
+        startEdit();
+        focusIpt();
     }
-    const editComplete = () => {
-        changeTitle();
-    }
-    const editCancel = () => {
-        toggleEdit();
-        setLocalTitle(props.title);
-    }
-    
-    const [localTitle, setLocalTitle] = useState(props.title);
-    const changeTitle = () => {
+    const onEditComplete = () => {
         props.setTodos(prev => {
             const newary = [...prev];
             newary[props.id] = { 
                 ...newary[props.id], 
-                title: localTitle
+                itemTitle: title
             }
             return newary;
         });
-        toggleEdit();
+        startEdit();
     }
+    const onEditCancel = () => {
+        startEdit();
+        setTitle(props.itemTitle);
+    }
+    // blk-0x02 end
 
-    const inputRef = useRef(null);
-    const focusToInput = () => {
-        inputRef.current && inputRef.current.focus()
+    /**
+     * blk-0x03 normal funcs
+     */
+    const focusIpt = () => {
+        refTitleIpt.current && refTitleIpt.current.focus()
     }
     useEffect(() => {
-        if(props.isEditing){
-            focusToInput();
+        if(isEditing){
+            focusIpt();
         }
-    }, [props.isEditing]);
-    const onEditclick = () => {
-        editStart();
-    }
-    // default: 0, 1, 2, 3, 4
-    // sts1: a, b, c
-    // sts2: x, y, z
-    // 0, 1, 2, 3, 4, a, b, c
+    }, [isEditing]);
+    // blk-0x03 end
+
+
     return (
         <div style={{ display: 'flex' }}>
             {
@@ -145,27 +135,27 @@ function TodoItem(props) {
                  * 24-12-14 how to set default style and append by boolean condition
                  */
             }
-            <button style={Boolean(props.isEditing) ? { visibility: "hidden" } : {}}>Drag block</button>
-            <input style={Boolean(props.isEditing) ? { visibility: "hidden" } : {}}
-                onChange={toggleCompleteCheck}
+            <button style={Boolean(isEditing) ? { visibility: "hidden" } : {}}>Drag block</button>
+            <input style={Boolean(isEditing) ? { visibility: "hidden" } : {}}
+                onChange={toggleCheck}
                 checked={props.checked}
                 type="checkbox">
             </input>
             {
-                Boolean(props.isEditing) ?
+                Boolean(isEditing) ?
                     <input
-                        ref={inputRef}
+                        ref={refTitleIpt}
                         type="text"
-                        value={localTitle}
+                        value={title}
                         style={{ flex: '1' }}
                         onChange={
-                            (e) => setLocalTitle(e.target.value)
+                            (e) => setTitle(e.target.value)
                         }
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
-                                editComplete();
+                                onEditComplete();
                             }else if (e.key === 'Escape') {
-                                editCancel();
+                                onEditCancel();
                             }
                         }}
                     // Todo: isEditing evnet
@@ -173,15 +163,15 @@ function TodoItem(props) {
                     // Ref: https://medium.com/itsoktomakemistakes/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E4%BD%BF%E7%94%A8-react-%E5%AF%AB%E5%87%BA%E5%B8%B8%E8%A6%8B%E7%9A%84-input-%E5%85%83%E4%BB%B6-3a0326aa4fb6
                     >
                     </input> :
-                    <label style={{ ...itemStyle, flex: '1' }}>{props.title}</label>
+                    <label style={{ ...itemStyle, flex: '1' }}>{props.itemTitle}</label>
             }
             <div style={{ width: '100px' }}>
-            {Boolean(props.isEditing) && <button onClick={editComplete}>o</button>}
-            {Boolean(props.isEditing) && <button onClick={editCancel}>x</button>}
-                {Boolean(!props.isEditing) && 
-                    <button onClick={onEditclick}>Edit</button>
+            {Boolean(isEditing) && <button onClick={onEditComplete}>o</button>}
+            {Boolean(isEditing) && <button onClick={onEditCancel}>x</button>}
+                {Boolean(!isEditing) && 
+                    <button onClick={onEdit}>Edit</button>
                 }
-                {Boolean(!props.isEditing) && <button onClick={delItem}>del</button>}
+                {Boolean(!isEditing) && <button onClick={onDelete}>del</button>}
             </div>
         </div>
     )
