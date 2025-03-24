@@ -22,6 +22,17 @@ folder: [google drive](https://drive.google.com/drive/u/0/folders/1TSZwPIfpwObc9
 - [ ] check if task exist
 - [ ] export / import with md or csv
 
+## Checksheet
+
+### TodoItem
+
+- [x] Click Check box and delete line
+- [x] Edit Button
+- [x] Del Button
+- [ ] Circle Button
+- [ ] X button
+- [ ] Plus Button
+
 ## Edit
 
 - change icon
