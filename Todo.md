@@ -29,8 +29,8 @@ folder: [google drive](https://drive.google.com/drive/u/0/folders/1TSZwPIfpwObc9
 - [x] Click Check box and delete line
 - [x] Edit Button
 - [x] Del Button
-- [ ] Circle Button
-- [ ] X button
+- [x] Circle Button
+- [x] X button
 - [ ] Plus Button
 
 ## Edit

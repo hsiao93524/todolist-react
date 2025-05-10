@@ -3,8 +3,8 @@ import React, { useState, useRef, useEffect } from "react";
 
 function TodoItem(props) {
     const itemStyle = { textDecoration: props.checked ? 'line-through' : 'none' };
-    const editStyle = { visibility: props.isItemEditing ? 'visible' : 'hidden' };
-    const staticStyle = { visibility: props.isItemEditing ? 'hidden' : 'visible' };
+    // const editStyle = { visibility: props.isItemEditing ? 'visible' : 'hidden' };
+    // const staticStyle = { visibility: props.isItemEditing ? 'hidden' : 'visible' };
     
     /**
      * blk-0x00 init: global to local 
@@ -22,10 +22,13 @@ function TodoItem(props) {
      * blk-0x01 init: useRefs
      */
     const refTitleIpt = useRef(null);
+    const focusIpt = () => {
+        refTitleIpt.current && refTitleIpt.current.focus()
+    }
     // blk-0x01 end
 
     /**
-     * blk-0x02 interact funcs
+     * blk-0x02 callback funcs
      */
     const toggleCheck = () => {
         
@@ -55,14 +58,34 @@ function TodoItem(props) {
         props.setTodos(prev => {
             const newTodos = prev.map((item) => {
                 const newItem = {...item}
+                newItem.isItemEditing = false;
                 if (newItem.id === props.id){
-                    setEditing(!isEditing)
+                    newItem.isItemEditing = true;
                 }
                 return newItem
             })
             
             return newTodos
         });
+
+        setEditing(true);
+    }
+
+    const endEdit = () => {
+        props.setTodos(prev => {
+            const newTodos = prev.map((item) => {
+                const newItem = {...item}
+                if (newItem.id === props.id){
+                    // setEditing(false);
+                    setTimeout(()=>{setEditing(false);}, 1000);
+                    newItem.isItemEditing = false;
+                }
+                return newItem
+            })
+            
+            return newTodos
+        });
+        setEditing(false);
     }
 
     const [checked, setChecked] = React.useState(false);
@@ -99,35 +122,58 @@ function TodoItem(props) {
     }
     const onEditComplete = () => {
         props.setTodos(prev => {
-            const newary = [...prev];
-            newary[props.id] = { 
-                ...newary[props.id], 
-                itemTitle: title
-            }
-            return newary;
+            const newTodos = prev.map((item) => {
+                const newItem = {...item}
+                if (newItem.id === props.id){
+                    newItem.itemTitle = title
+                }
+                return newItem
+            })
+
+            return newTodos
         });
-        startEdit();
+        endEdit();
     }
     const onEditCancel = () => {
-        startEdit();
+        endEdit();
         setTitle(props.itemTitle);
     }
     // blk-0x02 end
 
     /**
-     * blk-0x03 normal funcs
+     * blk-0x03 life cycle funcs
      */
-    const focusIpt = () => {
-        refTitleIpt.current && refTitleIpt.current.focus()
-    }
+    // useEffect(()=>{console.dir(refTitleIpt.current);}, []);
     useEffect(() => {
         if(isEditing){
             focusIpt();
         }
     }, [isEditing]);
+
+    useEffect(() => {
+        setEditing(props.isItemEditing)
+    }, [props.isItemEditing]);
     // blk-0x03 end
 
+    /**
+     * blk-0x04 other function
+     */
+    const cancelAllEdit = (() => {
+        props.setTodos(prev => {
+            const newTodos = prev.map((item) => {
+                const newItem = {...item}
+                console.log(newItem.onEditCancel)
+                setTimeout(()=>{setEditing(false);}, 100);
+                newItem.isItemEditing = false;
+                return newItem;
+            })
+            return newTodos;
+        });
+    });
 
+    // blk-0x04 end
+
+    // console.log(props.id)
     return (
         <div style={{ display: 'flex' }}>
             {
@@ -135,14 +181,14 @@ function TodoItem(props) {
                  * 24-12-14 how to set default style and append by boolean condition
                  */
             }
-            <button style={Boolean(isEditing) ? { visibility: "hidden" } : {}}>Drag block</button>
-            <input style={Boolean(isEditing) ? { visibility: "hidden" } : {}}
+            <button style={Boolean(props.isItemEditing) ? { visibility: "hidden" } : {}}>Drag block</button>
+            <input style={Boolean(props.isItemEditing) ? { visibility: "hidden" } : {}}
                 onChange={toggleCheck}
                 checked={props.checked}
                 type="checkbox">
             </input>
             {
-                Boolean(isEditing) ?
+                Boolean(props.isItemEditing) ?
                     <input
                         ref={refTitleIpt}
                         type="text"
@@ -166,12 +212,13 @@ function TodoItem(props) {
                     <label style={{ ...itemStyle, flex: '1' }}>{props.itemTitle}</label>
             }
             <div style={{ width: '100px' }}>
-            {Boolean(isEditing) && <button onClick={onEditComplete}>o</button>}
-            {Boolean(isEditing) && <button onClick={onEditCancel}>x</button>}
-                {Boolean(!isEditing) && 
+            {/*<button onClick={cancelAllEdit}>testClick</button>*/}
+            {Boolean(props.isItemEditing) && <button onClick={onEditComplete}>o</button>}
+            {Boolean(props.isItemEditing) && <button onClick={onEditCancel}>x</button>}
+                {Boolean(!props.isItemEditing) && 
                     <button onClick={onEdit}>Edit</button>
                 }
-                {Boolean(!isEditing) && <button onClick={onDelete}>del</button>}
+                {Boolean(!props.isItemEditing) && <button onClick={onDelete}>del</button>}
             </div>
         </div>
     )
