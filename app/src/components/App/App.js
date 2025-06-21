@@ -1,6 +1,7 @@
 // import './App.css';
 import React, { useState, useRef, useEffect } from "react";
 import TodoItem from '../TodoItem';
+import TodoItemAdder from '../TodoItemAdder';
 // 241019-002: Module not found: Error: Can't resolve 'styled-components'
 // import styled from 'styled-components';
 // https://styled-components.com/docs/basics#installation
@@ -58,6 +59,7 @@ function App() {
     }
 
     const doEditComplete = (id) => {
+        console.log("doEditComplete test");
         setTodos(prev => {
             const newTodos = prev.map((item) => {
                 const newItem = {...item}
@@ -84,11 +86,6 @@ function App() {
             
             return newTodos
         });
-    }
-
-    // add id 
-    const addItem = () => {
-        setTodos([...todos, {itemTitle: "new one", checked: false, isItemEditing: true}]);
     }
 
     
@@ -173,14 +170,14 @@ function App() {
                     doToggleCheck={doToggleCheck}
                     doEditComplete={doEditComplete}
                     />
+                
+                <TodoItemAdder
+                    setTodos={setTodos}
+                    addItemNew={addItemNew}
+                    doEditComplete={doEditComplete}
+                    />
             </div>
             
-            <div style={{ display: 'flex' }}>
-                <button style={{ visibility: "hidden" }}>Drag block</button>
-                <button onClick={addItem}>s+</button>
-                <div style={{ width: '100px' }}>
-                </div>
-            </div>
         </div>
     );
 }
