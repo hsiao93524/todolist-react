@@ -45,7 +45,7 @@ function TodoItemAdder(props) {
         console.log("TodoItemAdder: rander + btn")
         return <button onClick={() => {
             if(title){
-                props.addItemNew(title)
+                props.doAddComplete(title)
             }else{
                 console.log("Input is empty")
             }

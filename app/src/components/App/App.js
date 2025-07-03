@@ -91,8 +91,20 @@ function App() {
         });
     }
 
-    // Todo: To delete
-    const addItemNew = (title) => {
+    
+    const endEdit = (id) => {
+        setTodos(prev => {
+            const newTodos = prev.map((item) => {
+                const newItem = {...item}
+                if (newItem.id === id){
+                    newItem.isItemEditing = false;
+                    // isEditing = false;
+                }
+                return newItem
+            })
+            
+            return newTodos
+        });
     }
     
     // close all edit
@@ -125,7 +137,6 @@ function App() {
     }
 
     const doAddComplete = (addingItem) => {
-        console.log("addItemNew called")
         console.log(idxCnt.current);
         // setIdxCnt(idxCnt + 1);
         idxCnt.current = idxCnt.current + 1;
@@ -157,7 +168,7 @@ function App() {
                             <TodoItem
                                 key={todo.id}
                                 itemTitle={todo.itemTitle}
-                                checked={todo.checked} 
+                                isChecked={todo.checked} 
                                 isEditing={todo.isItemEditing}
                                 setTodos={setTodos}
                                 id={todo.id}
@@ -166,29 +177,14 @@ function App() {
                                 doDelete={doDelete}
                                 doToggleCheck={doToggleCheck}
                                 doEditComplete={doEditComplete}
+                                parentEndEdit={endEdit}
                             />
                         )
                     )
                 }
                 
-                <TodoItem
-                    key={"setAdding"}
-                    itemTitle=""
-                    checked={false} 
-                    isEditing={true}
-                    setTodos={()=>{}}
-                    id={"setAdding"}
-                    isaddingLine={true}
-                    addItemNew={addItemNew}
-                    doEdit={doEdit}
-                    doDelete={doDelete}
-                    doToggleCheck={doToggleCheck}
-                    doEditComplete={doEditComplete}
-                    />
-                
                 <TodoItemAdder
                     setTodos={setTodos}
-                    addItemNew={addItemNew}
                     doAddComplete={doAddComplete}
                     />
             </div>

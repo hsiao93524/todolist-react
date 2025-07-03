@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 
 
 function TodoItem(props) {
-    const itemStyle = { textDecoration: props.checked ? 'line-through' : 'none' };
     
     /**
      * blk-0x00 init: global to local 
@@ -10,6 +9,10 @@ function TodoItem(props) {
     const [title, setTitle] = useState(props.itemTitle);
 
     const {isEditing} = props;
+
+    const {isChecked} = props;
+    const {parentEndEdit} = props;
+    const itemStyle = { textDecoration: isChecked ? 'line-through' : 'none' };
     // blk-0x00 end
 
     /**
@@ -33,21 +36,8 @@ function TodoItem(props) {
     }
 
     const endEdit = () => {
-        props.setTodos(prev => {
-            const newTodos = prev.map((item) => {
-                const newItem = {...item}
-                if (newItem.id === props.id){
-                    newItem.isItemEditing = false;
-                    // isEditing = false;
-                }
-                return newItem
-            })
-            
-            return newTodos
-        });
+        parentEndEdit(props.id);
     }
-
-    const [checked, setChecked] = React.useState(false);
 
     const onEdit = () => {
         /**
@@ -93,29 +83,17 @@ function TodoItem(props) {
      */
 
     const renderBtns = () => {
-        if (Boolean(props.isaddingLine)) {
-            console.log("rander + btn")
-            return <button onClick={() => {
-                if(title){
-                    props.addItemNew(title)
-                }else{
-                    console.log("Input is empty")
-                }
-            }}>+</button>;
-        }
-        else{
-            return (Boolean(isEditing) ? (
-                <>
-                    <button onClick={onEditComplete}>o</button>
-                    <button onClick={onEditCancel}>x</button>
-                </>
-            ) : (
-                <>
-                    <button onClick={onEdit}>Edit</button>
-                    <button onClick={onDelete}>del</button>
-                </>
-            ))
-        }
+        return (Boolean(isEditing) ? (
+            <>
+                <button onClick={onEditComplete}>o</button>
+                <button onClick={onEditCancel}>x</button>
+            </>
+        ) : (
+            <>
+                <button onClick={onEdit}>Edit</button>
+                <button onClick={onDelete}>del</button>
+            </>
+        ))
     };
 
     // blk-0x04 end
@@ -125,7 +103,7 @@ function TodoItem(props) {
             <button style={Boolean(isEditing) ? { visibility: "hidden" } : {}}>Drag block</button>
             <input style={Boolean(isEditing) ? { visibility: "hidden" } : {}}
                 onChange={toggleCheck}
-                checked={props.checked}
+                checked={isChecked}
                 type="checkbox">
             </input>
             {
