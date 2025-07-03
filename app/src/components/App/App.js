@@ -19,11 +19,14 @@ function App() {
         { id:3 ,itemTitle: "auto todo 3 to isItemEditing", checked: false, isItemEditing: false },
     ])
 
-    const [idxCnt, setIdxCnt] = useState(
-        // Ask
-        // Math.max(...todos.map(todo => todo.id))
+    // const [idxCnt, setIdxCnt] = useState(
+    //     // Ask
+    //     // Math.max(...todos.map(todo => todo.id))
+        
+    // )
+    const idxCnt = useRef(
         Math.max(...todos.map(todo => todo.id)) + 1
-    )
+    );
 
     /**
      * 可共用 EndEdit 部分內容
@@ -58,8 +61,8 @@ function App() {
         });
     }
 
-    const doEditComplete = (id) => {
-        console.log("doEditComplete test");
+    const doEditComplete = (id, title) => {
+        console.log("doEditComplete test", id, title);
         setTodos(prev => {
             const newTodos = prev.map((item) => {
                 const newItem = {...item}
@@ -88,14 +91,8 @@ function App() {
         });
     }
 
-    
+    // Todo: To delete
     const addItemNew = (title) => {
-        console.log("addItemNew called")
-        console.log(title)
-        setIdxCnt(idxCnt + 1);
-        setTodos([...todos, {id: idxCnt, itemTitle: title, checked: false, isItemEditing: false}]);
-        // funcEndEdit()
-        closeAllEditing();
     }
     
     // close all edit
@@ -125,6 +122,24 @@ function App() {
             )
         );
         
+    }
+
+    const doAddComplete = (addingItem) => {
+        console.log("addItemNew called")
+        console.log(idxCnt.current);
+        // setIdxCnt(idxCnt + 1);
+        idxCnt.current = idxCnt.current + 1;
+        setTodos(prev => {
+            return [...prev, {
+                id: idxCnt.current, 
+                itemTitle: addingItem, 
+                checked: false, 
+                isItemEditing: false
+            }];
+        });
+        console.log(idxCnt.current);
+        // funcEndEdit()
+        closeAllEditing();
     }
 
     return (
@@ -174,7 +189,7 @@ function App() {
                 <TodoItemAdder
                     setTodos={setTodos}
                     addItemNew={addItemNew}
-                    doEditComplete={doEditComplete}
+                    doAddComplete={doAddComplete}
                     />
             </div>
             

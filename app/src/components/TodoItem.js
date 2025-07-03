@@ -57,7 +57,7 @@ function TodoItem(props) {
         focusIpt();
     }
     const onEditComplete = () => {
-        props.doEditComplete(props.id)
+        props.doEditComplete(props.id, title)
         // props.setTodos(prev => {
         //     const newTodos = prev.map((item) => {
         //         const newItem = {...item}

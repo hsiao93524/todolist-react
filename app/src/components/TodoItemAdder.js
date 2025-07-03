@@ -18,9 +18,10 @@ function TodoItemAdder(props) {
     /**
      * blk-0x02 callback funcs
      */
-    const onEditComplete = () => {
-        props.doEditComplete(props.id)
-        endEdit();
+    const onAddcomplete = () => {
+        props.doAddComplete(title);
+        // Todo : clear input
+        // endEdit();
     }
 
     const endEdit = () => {
@@ -67,7 +68,7 @@ function TodoItemAdder(props) {
                     }
                     onKeyDown={(e) => {
                         if (e.key === 'Enter') {
-                            onEditComplete();
+                            onAddcomplete();
                         }
                     }}
                 >
