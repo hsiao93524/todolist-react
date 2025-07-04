@@ -11,41 +11,17 @@ function TodoItemAdder(props) {
      * blk-0x01 init: useRefs
      */
     const refTitleIpt = useRef(null);
-    const focusIpt = () => {
-        refTitleIpt.current && refTitleIpt.current.focus()
-    }
-
-    /**
-     * blk-0x02 callback funcs
-     */
-    const onAddcomplete = () => {
-        props.doAddComplete(title);
-        // Todo : clear input
-        // endEdit();
-    }
-
-    const endEdit = () => {
-        props.setTodos(prev => {
-            const newTodos = prev.map((item) => {
-                const newItem = {...item}
-                if (newItem.id === props.id){
-                    newItem.isItemEditing = false;
-                }
-                return newItem
-            })
-            return newTodos
-        });
-    }
 
     /**
      * blk-0x04 other function
      */
 
     const renderAddBtns = () => {
-        console.log("TodoItemAdder: rander + btn")
+        console.log("TodoItemAdder: render '+' btn")
         return <button onClick={() => {
             if(title){
                 props.doAddComplete(title)
+                refTitleIpt.current.value = ""
             }else{
                 console.log("Input is empty")
             }
@@ -58,22 +34,24 @@ function TodoItemAdder(props) {
             <input style={{ visibility: "hidden" }}
                 type="checkbox">
             </input>
+            <div style={{ flex: '1' }}>
             {
                 <input
                     ref={refTitleIpt}
                     type="text"
-                    style={{ flex: '1' }}
                     onChange={
                         (e) => setTitle(e.target.value)
                     }
                     onKeyDown={(e) => {
                         if (e.key === 'Enter') {
-                            onAddcomplete();
+                            props.doAddComplete(title)
+                            refTitleIpt.current.value = ""
                         }
                     }}
                 >
                 </input>
             }
+            </div>
             <div style={{ width: '100px' }}>
                 {
                     renderAddBtns()

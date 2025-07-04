@@ -14,16 +14,11 @@ function App() {
     // Todo: How to use setTodos to get data from database or file
     // Adding status for judging adding or editing
     const [todos, setTodos] = useState([
-        { id:1 ,itemTitle: "auto todo 1", checked: true, isItemEditing: false },
-        { id:2 ,itemTitle: "auto todo 2", checked: false, isItemEditing: false },
-        { id:3 ,itemTitle: "auto todo 3 to isItemEditing", checked: false, isItemEditing: false },
+        { id:1 ,itemTitle: "auto todo 1", isChecked: true, isEditing: false },
+        { id:2 ,itemTitle: "auto todo 2", isChecked: false, isEditing: false },
+        { id:3 ,itemTitle: "auto todo 3 to isEditing", isChecked: false, isEditing: false },
     ])
 
-    // const [idxCnt, setIdxCnt] = useState(
-    //     // Ask
-    //     // Math.max(...todos.map(todo => todo.id))
-        
-    // )
     const idxCnt = useRef(
         Math.max(...todos.map(todo => todo.id)) + 1
     );
@@ -34,11 +29,12 @@ function App() {
     const startEdit = (id) => {
         
         setTodos(prev => {
-            const newTodos = prev.map((item) => {
+            const newTodos = prev.map(( item ) => {
                 const newItem = {...item}
-                newItem.isItemEditing = false;
                 if (newItem.id === id){
-                    newItem.isItemEditing = true;
+                    newItem.isEditing = true;
+                } else {
+                    newItem.isEditing = false;
                 }
                 return newItem
             })
@@ -48,11 +44,7 @@ function App() {
 
     }
 
-    const doEdit = (id) => {
-        startEdit(id);
-    }
-
-    const doDelete = (id) => {
+    const delItem = (id) => {
         setTodos(prev => {
             const newary = prev.filter((eleInLst) => {
                 return id !== eleInLst.id;
@@ -82,7 +74,7 @@ function App() {
             const newTodos = prev.map((item) => {
                 const newItem = {...item}
                 if (newItem.id === id){
-                    newItem.checked = !newItem.checked
+                    newItem.isChecked = !newItem.isChecked
                 }
                 return newItem
             })
@@ -97,7 +89,7 @@ function App() {
             const newTodos = prev.map((item) => {
                 const newItem = {...item}
                 if (newItem.id === id){
-                    newItem.isItemEditing = false;
+                    newItem.isEditing = false;
                     // isEditing = false;
                 }
                 return newItem
@@ -112,54 +104,67 @@ function App() {
         setTodos(prevTodos => {
             const newTodos = prevTodos.map((item) => {
                 const newItem = {...item}
-                newItem.isItemEditing = false;
+                newItem.isEditing = false;
                 return newItem
             })
 
             return newTodos
         })
     }
-    
-//https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/Arrow_functions#%E6%8F%8F%E8%BF%B0
-    const doCancelAll = () => {
-        setTodos(prevTodos =>
-
-            prevTodos.map(
-                (todo) => 
-                    ({
-                        ...todo, /* itemTitle: "auto todo 1", checked: true, isItemEditing: false */
-                        isItemEditing: false
-                    })
-                
-            )
-        );
-        
-    }
 
     const doAddComplete = (addingItem) => {
-        console.log(idxCnt.current);
-        // setIdxCnt(idxCnt + 1);
+        console.log(" doAddComplete 001: ", idxCnt.current);
         idxCnt.current = idxCnt.current + 1;
         setTodos(prev => {
             return [...prev, {
                 id: idxCnt.current, 
                 itemTitle: addingItem, 
-                checked: false, 
-                isItemEditing: false
+                isChecked: false, 
+                isEditing: false
             }];
         });
-        console.log(idxCnt.current);
-        // funcEndEdit()
+        console.log(" doAddComplete 002: ", idxCnt.current);
         closeAllEditing();
+    }
+
+    const onCheckAll = () => {
+        setTodos(prevTodos =>
+
+            prevTodos.map(
+                (todo) => 
+                    ({
+                        ...todo, /* itemTitle: "auto todo 1", isChecked: true, isEditing: false */
+                        isChecked: true
+                    })
+            )
+        );
+
+    }
+
+    const onUncheckAll = () => {
+        setTodos(prevTodos =>
+
+            prevTodos.map(
+                (todo) => 
+                    ({
+                        ...todo, /* itemTitle: "auto todo 1", isChecked: true, isEditing: false */
+                        isChecked: false
+                    })
+            )
+        );
+    }
+
+    const onDelAll = () => {
+        setTodos([]);
     }
 
     return (
         <div>
             <div id="app">{title}</div>
             <div id="toolbar">
-                <button>Complete all</button>
-                <button onClick={doCancelAll}>Cancel all</button>
-                <button>Delete all</button>
+                <button onClick={onCheckAll}>Check all</button>
+                <button onClick={onUncheckAll}>Uncheck all</button>
+                <button onClick={onDelAll}>Delete all</button>
             </div>
             <div id="todolist" style={{ width: "400px" }}>
                 {
@@ -168,23 +173,20 @@ function App() {
                             <TodoItem
                                 key={todo.id}
                                 itemTitle={todo.itemTitle}
-                                isChecked={todo.checked} 
-                                isEditing={todo.isItemEditing}
-                                setTodos={setTodos}
+                                isChecked={todo.isChecked} 
+                                isEditing={todo.isEditing}
                                 id={todo.id}
-                                isaddingLine={false}
-                                doEdit={doEdit}
-                                doDelete={doDelete}
+                                startEdit={startEdit}
+                                delItem={delItem}
                                 doToggleCheck={doToggleCheck}
                                 doEditComplete={doEditComplete}
-                                parentEndEdit={endEdit}
+                                endEdit={endEdit} 
                             />
                         )
                     )
                 }
                 
                 <TodoItemAdder
-                    setTodos={setTodos}
                     doAddComplete={doAddComplete}
                     />
             </div>

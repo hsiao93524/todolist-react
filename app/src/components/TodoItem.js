@@ -7,18 +7,13 @@ function TodoItem(props) {
      * blk-0x00 init: global to local 
      */
     const [title, setTitle] = useState(props.itemTitle);
-
-    const {isEditing} = props;
-
-    const {isChecked} = props;
-    const {parentEndEdit} = props;
-    const itemStyle = { textDecoration: isChecked ? 'line-through' : 'none' };
     // blk-0x00 end
 
     /**
      * blk-0x01 init: useRefs
      */
     const refTitleIpt = useRef(null);
+    
     const focusIpt = () => {
         refTitleIpt.current && refTitleIpt.current.focus()
     }
@@ -32,37 +27,19 @@ function TodoItem(props) {
     }
 
     const onDelete = () => {
-        props.doDelete(props.id)
-    }
-
-    const endEdit = () => {
-        parentEndEdit(props.id);
+        props.delItem(props.id)
     }
 
     const onEdit = () => {
-        /**
-         * Modify
-         */
-        props.doEdit(props.id);
+        props.startEdit(props.id);
         focusIpt();
     }
     const onEditComplete = () => {
         props.doEditComplete(props.id, title)
-        // props.setTodos(prev => {
-        //     const newTodos = prev.map((item) => {
-        //         const newItem = {...item}
-        //         if (newItem.id === props.id){
-        //             newItem.itemTitle = title
-        //         }
-        //         return newItem
-        //     })
-
-        //     return newTodos
-        // });
-        endEdit();
+        props.endEdit(props.id);
     }
     const onEditCancel = () => {
-        endEdit();
+        props.endEdit(props.id);
         setTitle(props.itemTitle);
     }
     // blk-0x02 end
@@ -71,10 +48,10 @@ function TodoItem(props) {
      * blk-0x03 life cycle funcs
      */
     useEffect(() => {
-        if(isEditing){
+        if(props.isEditing){
             focusIpt();
         }
-    }, [isEditing]);
+    }, [props.isEditing]);
 
     // blk-0x03 end
 
@@ -83,55 +60,61 @@ function TodoItem(props) {
      */
 
     const renderBtns = () => {
-        return (Boolean(isEditing) ? (
+        return (Boolean(props.isEditing) ? (
             <>
-                <button onClick={onEditComplete}>o</button>
-                <button onClick={onEditCancel}>x</button>
+                <button onClick={ onEditComplete }>o</button>
+                <button onClick={ onEditCancel }>x</button>
             </>
         ) : (
             <>
-                <button onClick={onEdit}>Edit</button>
-                <button onClick={onDelete}>del</button>
+                <button onClick={ onEdit }>Edit</button>
+                <button onClick={ onDelete }>del</button>
             </>
         ))
     };
+
+    const renderTitle = () => {
+        return (
+            /**0705 */
+            Boolean( props.isEditing ) ?
+                <input
+                    ref={refTitleIpt}
+                    type="text"
+                    value={ title }
+                    onChange={
+                        (e) => setTitle( e.target.value )
+                    }
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            onEditComplete();
+                        }else if (e.key === 'Escape') {
+                            onEditCancel();
+                        }
+                    }}
+                ></input>
+                :
+                <label style={{ textDecoration: props.isChecked ? 'line-through' : 'none', flex: '1' }}>
+                    { props.itemTitle }
+                </label>
+        )
+    }
 
     // blk-0x04 end
 
     return (
         <div style={{ display: 'flex' }}>
-            <button style={Boolean(isEditing) ? { visibility: "hidden" } : {}}>Drag block</button>
-            <input style={Boolean(isEditing) ? { visibility: "hidden" } : {}}
+            <button style={Boolean(props.isEditing) ? { visibility: "hidden" } : {}}>Drag block</button>
+            
+            <input style={Boolean(props.isEditing) ? { visibility: "hidden" } : {}}
                 onChange={toggleCheck}
-                checked={isChecked}
+                checked={props.isChecked}
                 type="checkbox">
             </input>
-            {
-                Boolean(isEditing) ?
-                    <input
-                        ref={refTitleIpt}
-                        type="text"
-                        value={title}
-                        style={{ flex: '1' }}
-                        onChange={
-                            (e) => setTitle(e.target.value)
-                        }
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                onEditComplete();
-                            }else if (e.key === 'Escape') {
-                                onEditCancel();
-                            }
-                        }}
-                    >
-                    </input> :
-                    <label style={{ ...itemStyle, flex: '1' }}>{props.itemTitle}</label>
-            }
+            <div style={{ flex: '1' }}>
+                { renderTitle() }
+            </div>
             <div style={{ width: '100px' }}>
-                {
-                    renderBtns()
-                }
-                
+                { renderBtns() }
             </div>
         </div>
     )

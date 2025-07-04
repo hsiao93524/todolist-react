@@ -8,7 +8,7 @@ folder: [google drive](https://drive.google.com/drive/u/0/folders/1TSZwPIfpwObc9
 
 ## issue
 
-- [ ] complete all button function
+- [ ] complete all button function -> checkedall
 - [ ] cancel all button function
 - [ ] delete all button function
 - [ ] drag block
@@ -31,7 +31,7 @@ folder: [google drive](https://drive.google.com/drive/u/0/folders/1TSZwPIfpwObc9
 - [x] Del Button
 - [x] Circle Button
 - [x] X button
-- [ ] Plus Button
+- [x] Plus Button
 
 ## Edit
 
