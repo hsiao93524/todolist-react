@@ -1,7 +1,14 @@
 // import './App.css';
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, act } from "react";
 import TodoItem from "../TodoItem";
 import TodoItemAdder from "../TodoItemAdder";
+
+import { DndContext } from "@dnd-kit/core";
+
+import { arrayMove, SortableContext } from "@dnd-kit/sortable";
+
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+
 // 241019-002: Module not found: Error: Can't resolve 'styled-components'
 // import styled from 'styled-components';
 // https://styled-components.com/docs/basics#installation
@@ -150,6 +157,18 @@ function App() {
     setTodos([]);
   };
 
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (over && active.id != over.id) {
+      setTodos((item) => {
+        const oldIdx = todos.findIndex((item) => item.id === active.id);
+        const newIdx = todos.findIndex((item) => item.id === over.id);
+        return arrayMove(todos, oldIdx, newIdx);
+      });
+    }
+  };
+
   return (
     <div>
       <div id="app">{title}</div>
@@ -159,20 +178,28 @@ function App() {
         <button onClick={onDelAll}>Delete all</button>
       </div>
       <div id="todolist" style={{ width: "400px" }}>
-        {todos.map((todo) => (
-          <TodoItem
-            key={todo.id}
-            itemTitle={todo.itemTitle}
-            isChecked={todo.isChecked}
-            isEditing={todo.isEditing}
-            id={todo.id}
-            startEdit={startEdit}
-            delItem={delItem}
-            doToggleCheck={doToggleCheck}
-            doEditComplete={doEditComplete}
-            endEdit={endEdit}
-          />
-        ))}
+        <DndContext
+          onDragStart={() => {}}
+          onDragEnd={handleDragEnd}
+          modifiers={[restrictToVerticalAxis]}
+        >
+          <SortableContext items={todos}>
+            {todos.map((todo) => (
+              <TodoItem
+                key={todo.id}
+                itemTitle={todo.itemTitle}
+                isChecked={todo.isChecked}
+                isEditing={todo.isEditing}
+                id={todo.id}
+                startEdit={startEdit}
+                delItem={delItem}
+                doToggleCheck={doToggleCheck}
+                doEditComplete={doEditComplete}
+                endEdit={endEdit}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
 
         <TodoItemAdder doAddComplete={doAddComplete} />
       </div>

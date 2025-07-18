@@ -6,6 +6,24 @@ drawio: [google drive](https://drive.google.com/file/d/1sfAMHRo16VyNzWzhUfj2Munx
 
 folder: [google drive](https://drive.google.com/drive/u/0/folders/1TSZwPIfpwObc9920vAAA2lFXXTkqkBTR)
 
+## draggable list
+
+- react-sortablejs
+  - https://www.npmjs.com/package/react-sortablejs
+- Sortable
+  - https://github.com/SortableJS/Sortable#options
+- react-beautiful-dnd
+  - https://github.com/atlassian/react-beautiful-dnd
+- React DnD
+  - https://react-dnd.github.io/react-dnd/docs/api/use-drag
+- react-draggable
+  - https://www.npmjs.com/package/react-draggable
+  - https://github.com/react-grid-layout/react-draggable
+- dnd-kit
+  - https://www.npmjs.com/package/@dnd-kit/core
+  - https://github.com/clauderic/dnd-kit
+  - https://www.youtube.com/watch?v=wmk50PEsVrs
+
 ## issue
 
 - [ ] complete all button function -> checkedall

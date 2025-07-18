@@ -1,6 +1,12 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 function TodoItem(props) {
+  const { listeners, setNodeRef, transform, transition } = useSortable({
+    id: props.id,
+  });
+
   /**
    * blk-0x00 init: global to local
    */
@@ -103,9 +109,17 @@ function TodoItem(props) {
 
   // blk-0x04 end
 
+  const dragStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
   return (
-    <div style={{ display: "flex" }}>
-      <button style={Boolean(props.isEditing) ? { visibility: "hidden" } : {}}>
+    <div ref={setNodeRef} style={{ ...dragStyle, display: "flex" }}>
+      <button
+        {...listeners}
+        style={Boolean(props.isEditing) ? { visibility: "hidden" } : {}}
+      >
         Drag block
       </button>
 
